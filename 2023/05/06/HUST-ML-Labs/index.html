@@ -1,0 +1,681 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="EliteGUO">
+  <meta name="keywords" content="blog">
+  
+    <meta name="description" content="机器学习之knn算法1. knn算法原理（1）AD（2）A 2. 使用sklearn中的kNN算法进行分类1234567891011121314151617181920from sklearn.neighbors import KNeighborsClassifierfrom sklearn.preprocessing import StandardScalerdef classification">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HUST ML Labs">
+<meta property="og:url" content="https://eliteguo.github.io/2023/05/06/HUST-ML-Labs/index.html">
+<meta property="og:site_name" content="EliteGUO">
+<meta property="og:description" content="机器学习之knn算法1. knn算法原理（1）AD（2）A 2. 使用sklearn中的kNN算法进行分类1234567891011121314151617181920from sklearn.neighbors import KNeighborsClassifierfrom sklearn.preprocessing import StandardScalerdef classification">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-06T03:11:53.000Z">
+<meta property="article:modified_time" content="2023-11-14T07:21:02.113Z">
+<meta property="article:author" content="EliteGUO">
+<meta property="article:tag" content="原创">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>HUST ML Labs - EliteGUO</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"eliteguo.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EliteGUO</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="HUST ML Labs"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-06 11:11" pubdate>
+          2023年5月6日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          17k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          144 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">HUST ML Labs</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="机器学习之knn算法"><a href="#机器学习之knn算法" class="headerlink" title="机器学习之knn算法"></a>机器学习之knn算法</h1><h2 id="1-knn算法原理"><a href="#1-knn算法原理" class="headerlink" title="1. knn算法原理"></a>1. knn算法原理</h2><p>（1）AD（2）A</p>
+<h2 id="2-使用sklearn中的kNN算法进行分类"><a href="#2-使用sklearn中的kNN算法进行分类" class="headerlink" title="2. 使用sklearn中的kNN算法进行分类"></a>2. 使用sklearn中的kNN算法进行分类</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.neighbors <span class="hljs-keyword">import</span> KNeighborsClassifier<br><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> StandardScaler<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">classification</span>(<span class="hljs-params">train_feature, train_label, test_feature</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    使用KNeighborsClassifier对test_feature进行分类</span><br><span class="hljs-string">    :param train_feature: 训练集数据</span><br><span class="hljs-string">    :param train_label: 训练集标签</span><br><span class="hljs-string">    :param test_feature: 测试集数据</span><br><span class="hljs-string">    :return: 测试集预测结果</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br>    <span class="hljs-comment">#********* Begin *********#</span><br>    scaler = StandardScaler()<br>    train_feature = scaler.fit_transform(train_feature)<br><br>    classifier = KNeighborsClassifier(<span class="hljs-number">5</span>)<br>    classifier.fit(train_feature, train_label)<br><br>    <span class="hljs-keyword">return</span> classifier.predict(scaler.transform(test_feature))<br>    <span class="hljs-comment">#********* End *********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="3-使用sklearn中的kNN算法进行回归"><a href="#3-使用sklearn中的kNN算法进行回归" class="headerlink" title="3. 使用sklearn中的kNN算法进行回归"></a>3. 使用sklearn中的kNN算法进行回归</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.neighbors <span class="hljs-keyword">import</span> KNeighborsRegressor<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">regression</span>(<span class="hljs-params">train_feature, train_label, test_feature</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    使用KNeighborsRegressor对test_feature进行分类</span><br><span class="hljs-string">    :param train_feature: 训练集数据</span><br><span class="hljs-string">    :param train_label: 训练集标签</span><br><span class="hljs-string">    :param test_feature: 测试集数据</span><br><span class="hljs-string">    :return: 测试集预测结果</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br>    <span class="hljs-comment">#********* Begin *********#</span><br>    clf = KNeighborsRegressor()  <span class="hljs-comment"># 生成K近邻分类器</span><br>    clf.fit(train_feature, train_label)  <span class="hljs-comment"># 训练分类器</span><br>    predict_result = clf.predict(test_feature)  <span class="hljs-comment"># 进行预测</span><br><br>    <span class="hljs-keyword">return</span> predict_result<br>    <span class="hljs-comment">#********* End *********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="4-分析红酒数据"><a href="#4-分析红酒数据" class="headerlink" title="4. 分析红酒数据"></a>4. 分析红酒数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">alcohol_mean</span>(<span class="hljs-params">data</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    返回红酒数据中红酒的酒精平均含量</span><br><span class="hljs-string">    :param data: 红酒数据对象</span><br><span class="hljs-string">    :return: 酒精平均含量，类型为float</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br>    <span class="hljs-comment">#********* Begin *********#</span><br>    <span class="hljs-keyword">return</span> data.data[:, <span class="hljs-number">0</span>].mean()<br>    <span class="hljs-comment">#********* End **********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-对数据进行标准化"><a href="#5-对数据进行标准化" class="headerlink" title="5. 对数据进行标准化"></a>5. 对数据进行标准化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> StandardScaler<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">scaler</span>(<span class="hljs-params">data</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    返回标准化后的红酒数据</span><br><span class="hljs-string">    :param data: 红酒数据对象</span><br><span class="hljs-string">    :return: 标准化后的红酒数据，类型为ndarray</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br>    <span class="hljs-comment">#********* Begin *********#</span><br>    <span class="hljs-keyword">return</span> StandardScaler().fit_transform(data.data)<br>    <span class="hljs-comment">#********* End **********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="6-使用kNN算法进行预测"><a href="#6-使用kNN算法进行预测" class="headerlink" title="6. 使用kNN算法进行预测"></a>6. 使用kNN算法进行预测</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.neighbors <span class="hljs-keyword">import</span> KNeighborsClassifier<br><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> StandardScaler<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">classification</span>(<span class="hljs-params">train_feature, train_label, test_feature</span>):<br><br>    scaler = StandardScaler()<br>    train_feature = scaler.fit_transform(train_feature)<br><br>    classifier = KNeighborsClassifier(<span class="hljs-number">5</span>)<br>    classifier.fit(train_feature, train_label)<br><br>    <span class="hljs-keyword">return</span> classifier.predict(scaler.transform(test_feature))<br></code></pre></td></tr></table></figure>
+
+<h1 id="感知机"><a href="#感知机" class="headerlink" title="感知机"></a>感知机</h1><h2 id="1-西瓜好坏自动识别"><a href="#1-西瓜好坏自动识别" class="headerlink" title="1. 西瓜好坏自动识别"></a>1. 西瓜好坏自动识别</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#encoding=utf8</span><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-comment">#构建感知机算法</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Perceptron</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, learning_rate = <span class="hljs-number">0.01</span>, max_iter = <span class="hljs-number">200</span></span>):<br>        self.lr = learning_rate<br>        self.max_iter = max_iter<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fit</span>(<span class="hljs-params">self, data, label</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        input:data(ndarray):训练数据特征</span><br><span class="hljs-string">              label(ndarray):训练数据标签</span><br><span class="hljs-string">        output:w(ndarray):训练好的权重</span><br><span class="hljs-string">               b(ndarry):训练好的偏置</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        <span class="hljs-comment">#编写感知机训练方法，w为权重，b为偏置</span><br>        self.w = np.array([<span class="hljs-number">1.</span>]*data.shape[<span class="hljs-number">1</span>])<br>        self.b = np.array([<span class="hljs-number">1.</span>])<br>        <span class="hljs-comment">#********* Begin *********#</span><br>        length = data.shape[<span class="hljs-number">0</span>]  <span class="hljs-comment"># 迭代数据时会多次用到数据集长度</span><br><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.max_iter):  <span class="hljs-comment"># 如果超出最大迭代次数就停止训练</span><br>            has_error = <span class="hljs-literal">False</span>   <span class="hljs-comment"># 如果后续发现一次训练没有错误也停止训练</span><br><br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(length):     <span class="hljs-comment"># 迭代训练数据</span><br>                x = data[i]             <span class="hljs-comment"># x 为当前数据</span><br>                <span class="hljs-comment"># 即 x_1*w_1 + x_2*w_2 + ... + x_i*w_i + b, 用向量乘法会简介一些</span><br>                y = x.dot(self.w) + self.b<br><br>                res = <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> y &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> - <span class="hljs-number">1</span>       <span class="hljs-comment"># 算出来的 y 接近 1 就相当于预测结果是 1, 接近 -1 则预测 -1</span><br>                <span class="hljs-keyword">if</span> res == label[i]:             <span class="hljs-comment"># 如果预测对了就不干事</span><br>                    <span class="hljs-keyword">continue</span><br><br>                <span class="hljs-keyword">else</span>:                           <span class="hljs-comment"># 如果预测错了</span><br>                    has_error = <span class="hljs-literal">True</span><br>                    <span class="hljs-comment"># 按题目中给的公式更新 w 和 b</span><br>                    self.w -= self.lr * res * x<br>                    self.b -= self.lr * res<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> has_error:<br>                <span class="hljs-keyword">break</span><br>        <span class="hljs-comment">#********* End *********#</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">predict</span>(<span class="hljs-params">self, data</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        input:data(ndarray):测试数据特征</span><br><span class="hljs-string">        output:predict(ndarray):预测标签</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        <span class="hljs-comment">#********* Begin *********#</span><br>        predict = []<br>        <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> data:<br>            y = self.w.dot(x) + self.b<br>            res = <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> y &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> - <span class="hljs-number">1</span><br>            predict.append(res)<br><br>        <span class="hljs-keyword">return</span> predict<br><br>        <span class="hljs-comment">#********* End *********#</span><br>        <span class="hljs-keyword">return</span> predict<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-scikit-learn感知机实践-癌细胞精准识别"><a href="#2-scikit-learn感知机实践-癌细胞精准识别" class="headerlink" title="2. scikit-learn感知机实践 - 癌细胞精准识别"></a>2. scikit-learn感知机实践 - 癌细胞精准识别</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># encoding=utf8</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">from</span> sklearn.linear_model.perceptron <span class="hljs-keyword">import</span> Perceptron<br><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> StandardScaler<br><br><br><span class="hljs-comment"># 获取训练数据</span><br>train_data = pd.read_csv(<span class="hljs-string">&#x27;./step2/train_data.csv&#x27;</span>)<br><span class="hljs-comment"># 获取训练标签</span><br>train_label = pd.read_csv(<span class="hljs-string">&#x27;./step2/train_label.csv&#x27;</span>)<br>train_label = train_label[<span class="hljs-string">&#x27;target&#x27;</span>]<br><span class="hljs-comment"># 获取测试数据</span><br>test_data = pd.read_csv(<span class="hljs-string">&#x27;./step2/test_data.csv&#x27;</span>)<br><br><span class="hljs-keyword">if</span> os.path.exists(<span class="hljs-string">&#x27;./step2/result.csv&#x27;</span>):<br>    os.remove(<span class="hljs-string">&#x27;./step2/result.csv&#x27;</span>)<br><br><span class="hljs-comment"># 标准化数据</span><br>scaler = StandardScaler()<br>train_data = scaler.fit_transform(train_data)<br><br>clf = Perceptron()<br>clf.fit(train_data, train_label)<br>pred = clf.predict(scaler.transform(test_data))<br><br>result = np.where(pred &gt; <span class="hljs-number">0.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)<br><br>df = pd.DataFrame(result, columns=[<span class="hljs-string">&quot;result&quot;</span>])<br>df.to_csv(<span class="hljs-string">&#x27;./step2/result.csv&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><h2 id="1-逻辑回归核心思想"><a href="#1-逻辑回归核心思想" class="headerlink" title="1. 逻辑回归核心思想"></a>1. 逻辑回归核心思想</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#encoding=utf8</span><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">sigmoid</span>(<span class="hljs-params">t</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    完成sigmoid函数计算</span><br><span class="hljs-string">    :param t: 负无穷到正无穷的实数</span><br><span class="hljs-string">    :return: 转换后的概率值</span><br><span class="hljs-string">    :可以考虑使用np.exp()函数</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br>    <span class="hljs-comment">#********** Begin **********#</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> / (<span class="hljs-number">1</span> + np.exp(-t))<br>    <span class="hljs-comment">#********** End **********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="2-逻辑回归的损失函数"><a href="#2-逻辑回归的损失函数" class="headerlink" title="2. 逻辑回归的损失函数"></a>2. 逻辑回归的损失函数</h2><p>(1)A (2)ACD (3)AB (4)D</p>
+<h2 id="3-梯度下降"><a href="#3-梯度下降" class="headerlink" title="3. 梯度下降"></a>3. 梯度下降</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> warnings<br>warnings.filterwarnings(<span class="hljs-string">&quot;ignore&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">gradient_descent</span>(<span class="hljs-params">initial_theta,eta=<span class="hljs-number">0.05</span>,n_iters=<span class="hljs-number">1000</span>,epslion=<span class="hljs-number">1e-8</span></span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    梯度下降</span><br><span class="hljs-string">    :param initial_theta: 参数初始值，类型为float</span><br><span class="hljs-string">    :param eta: 学习率，类型为float</span><br><span class="hljs-string">    :param n_iters: 训练轮数，类型为int</span><br><span class="hljs-string">    :param epslion: 容忍误差范围，类型为float</span><br><span class="hljs-string">    :return: 训练后得到的参数</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br>    <span class="hljs-comment">#   请在此添加实现代码   #</span><br>    <span class="hljs-comment">#********** Begin *********#</span><br>    theta = initial_theta<br>    i_iter = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">while</span> i_iter &lt; n_iters:<br>        gradient = <span class="hljs-number">2</span>*(theta-<span class="hljs-number">3</span>)<br>        last_theta = theta<br>        theta = theta - eta*gradient<br>        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">abs</span>(theta-last_theta)&lt;epslion):<br>            <span class="hljs-keyword">break</span><br>        i_iter +=<span class="hljs-number">1</span><br>    <span class="hljs-keyword">return</span> theta<br>    <span class="hljs-comment">#********** End **********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="4-癌细胞精准识别"><a href="#4-癌细胞精准识别" class="headerlink" title="4. 癌细胞精准识别"></a>4. 癌细胞精准识别</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> warnings<br>warnings.filterwarnings(<span class="hljs-string">&quot;ignore&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">sigmoid</span>(<span class="hljs-params">x</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    sigmoid函数</span><br><span class="hljs-string">    :param x: 转换前的输入</span><br><span class="hljs-string">    :return: 转换后的概率</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>/(<span class="hljs-number">1</span>+np.exp(-x))<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fit</span>(<span class="hljs-params">x,y,eta=<span class="hljs-number">1e-3</span>,n_iters=<span class="hljs-number">10000</span></span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    训练逻辑回归模型</span><br><span class="hljs-string">    :param x: 训练集特征数据，类型为ndarray</span><br><span class="hljs-string">    :param y: 训练集标签，类型为ndarray</span><br><span class="hljs-string">    :param eta: 学习率，类型为float</span><br><span class="hljs-string">    :param n_iters: 训练轮数，类型为int</span><br><span class="hljs-string">    :return: 模型参数，类型为ndarray</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br>    <span class="hljs-comment">#   请在此添加实现代码   #</span><br>    <span class="hljs-comment">#********** Begin *********#</span><br>    theta = np.zeros(x.shape[<span class="hljs-number">1</span>])<br>    i_iter = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">while</span> i_iter &lt; n_iters:<br>        gradient = (sigmoid(x.dot(theta))-y).dot(x)<br>        theta = theta -eta*gradient<br>        i_iter += <span class="hljs-number">1</span><br>    <span class="hljs-keyword">return</span> theta<br>    <span class="hljs-comment">#********** End **********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-手写数字识别"><a href="#5-手写数字识别" class="headerlink" title="5. 手写数字识别"></a>5. 手写数字识别</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.linear_model <span class="hljs-keyword">import</span> LogisticRegression<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">digit_predict</span>(<span class="hljs-params">train_image, train_label, test_image</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    实现功能：训练模型并输出预测结果</span><br><span class="hljs-string">    :param train_sample: 包含多条训练样本的样本集，类型为ndarray,shape为[-1, 8, 8]</span><br><span class="hljs-string">    :param train_label: 包含多条训练样本标签的标签集，类型为ndarray</span><br><span class="hljs-string">    :param test_sample: 包含多条测试样本的测试集，类型为ndarry</span><br><span class="hljs-string">    :return: test_sample对应的预测标签</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br>    <span class="hljs-comment">#************* Begin ************#</span><br>    <span class="hljs-comment"># 训练集变形</span><br>    flat_train_image = train_image.reshape((-<span class="hljs-number">1</span>, <span class="hljs-number">64</span>))<br>    <span class="hljs-comment"># 训练集标准化</span><br>    train_min = flat_train_image.<span class="hljs-built_in">min</span>()<br>    train_max = flat_train_image.<span class="hljs-built_in">max</span>()<br>    flat_train_image = (flat_train_image-train_min)/(train_max-train_min)<br>    <span class="hljs-comment"># 测试集变形</span><br>    flat_test_image = test_image.reshape((-<span class="hljs-number">1</span>, <span class="hljs-number">64</span>))<br>    <span class="hljs-comment"># 测试集标准化</span><br>    test_min = flat_test_image.<span class="hljs-built_in">min</span>()<br>    test_max = flat_test_image.<span class="hljs-built_in">max</span>()<br>    flat_test_image = (flat_test_image - test_min) / (test_max - test_min)<br>    <span class="hljs-comment"># 训练--预测</span><br>    rf = LogisticRegression(C=<span class="hljs-number">4.0</span>)<br>    rf.fit(flat_train_image, train_label)<br>    <span class="hljs-keyword">return</span> rf.predict(flat_test_image)<br>    <span class="hljs-comment">#************* End **************#</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="朴素贝叶斯分类器"><a href="#朴素贝叶斯分类器" class="headerlink" title="朴素贝叶斯分类器"></a>朴素贝叶斯分类器</h1><h2 id="1-条件概率"><a href="#1-条件概率" class="headerlink" title="1. 条件概率"></a>1. 条件概率</h2><p>（1）A （2）C</p>
+<h2 id="2-贝叶斯公式"><a href="#2-贝叶斯公式" class="headerlink" title="2. 贝叶斯公式"></a>2. 贝叶斯公式</h2><p>（1）D （2）C</p>
+<h2 id="3-朴素贝叶斯分类算法流程"><a href="#3-朴素贝叶斯分类算法流程" class="headerlink" title="3. 朴素贝叶斯分类算法流程"></a>3. 朴素贝叶斯分类算法流程</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">NaiveBayesClassifier</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        self.label_prob表示每种类别在数据中出现的概率</span><br><span class="hljs-string">        例如，&#123;0:0.333, 1:0.667&#125;表示数据中类别0出现的概率为0.333，类别1的概率为0.667</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        self.label_prob = &#123;&#125;<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        self.condition_prob表示每种类别确定的条件下各个特征出现的概率</span><br><span class="hljs-string">        例如训练数据集中的特征为 [[2, 1, 1],</span><br><span class="hljs-string">                              [1, 2, 2],</span><br><span class="hljs-string">                              [2, 2, 2],</span><br><span class="hljs-string">                              [2, 1, 2],</span><br><span class="hljs-string">                              [1, 2, 3]]</span><br><span class="hljs-string">        标签为[1, 0, 1, 0, 1]</span><br><span class="hljs-string">        那么当标签为0时第0列的值为1的概率为0.5，值为2的概率为0.5;</span><br><span class="hljs-string">        当标签为0时第1列的值为1的概率为0.5，值为2的概率为0.5;</span><br><span class="hljs-string">        当标签为0时第2列的值为1的概率为0，值为2的概率为1，值为3的概率为0;</span><br><span class="hljs-string">        当标签为1时第0列的值为1的概率为0.333，值为2的概率为0.666;</span><br><span class="hljs-string">        当标签为1时第1列的值为1的概率为0.333，值为2的概率为0.666;</span><br><span class="hljs-string">        当标签为1时第2列的值为1的概率为0.333，值为2的概率为0.333,值为3的概率为0.333;</span><br><span class="hljs-string">        因此self.label_prob的值如下：     </span><br><span class="hljs-string">        &#123;</span><br><span class="hljs-string">            0:&#123;</span><br><span class="hljs-string">                0:&#123;</span><br><span class="hljs-string">                    1:0.5</span><br><span class="hljs-string">                    2:0.5</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                1:&#123;</span><br><span class="hljs-string">                    1:0.5</span><br><span class="hljs-string">                    2:0.5</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                2:&#123;</span><br><span class="hljs-string">                    1:0</span><br><span class="hljs-string">                    2:1</span><br><span class="hljs-string">                    3:0</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">            &#125;</span><br><span class="hljs-string">            1:</span><br><span class="hljs-string">            &#123;</span><br><span class="hljs-string">                0:&#123;</span><br><span class="hljs-string">                    1:0.333</span><br><span class="hljs-string">                    2:0.666</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                1:&#123;</span><br><span class="hljs-string">                    1:0.333</span><br><span class="hljs-string">                    2:0.666</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                2:&#123;</span><br><span class="hljs-string">                    1:0.333</span><br><span class="hljs-string">                    2:0.333</span><br><span class="hljs-string">                    3:0.333</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">            &#125;</span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        self.condition_prob = &#123;&#125;<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fit</span>(<span class="hljs-params">self, feature, label</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        对模型进行训练，需要将各种概率分别保存在self.label_prob和self.condition_prob中</span><br><span class="hljs-string">        :param feature: 训练数据集所有特征组成的ndarray</span><br><span class="hljs-string">        :param label:训练数据集中所有标签组成的ndarray</span><br><span class="hljs-string">        :return: 无返回</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br><br><br>        <span class="hljs-comment">#********* Begin *********#</span><br>        <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> label:<br>            self.label_prob[l] = self.label_prob.get(l, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span><br><br>        <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> self.label_prob.items():<br>            self.label_prob[k] = v / <span class="hljs-built_in">len</span>(label)<br><br>        label2data = &#123;&#125;<br>        <span class="hljs-keyword">for</span> i, data <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(feature):<br>            l = label[i]<br>            old_data = label2data.get(l)<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> old_data:<br>                label2data[l] = [data]<br>            <span class="hljs-keyword">else</span>:<br>                label2data[l].append(data)<br><br>        <span class="hljs-keyword">for</span> l, all_data <span class="hljs-keyword">in</span> label2data.items():<br>            feat_index2feat_count = &#123;&#125;<br>            <span class="hljs-keyword">for</span> data <span class="hljs-keyword">in</span> all_data:<br>                <span class="hljs-keyword">for</span> i, d <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(data):<br>                    feat_index2feat_count[i] = feat_index2feat_count.get(i, &#123;&#125;)<br>                    feat_index2feat_count[i][d] = feat_index2feat_count[i].get(<br>                        d, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span><br><br>            feat_index2feat_count[<span class="hljs-string">&quot;__count__&quot;</span>] = <span class="hljs-built_in">len</span>(all_data)<br><br>            self.condition_prob[l] = feat_index2feat_count<br><br>        <span class="hljs-comment"># print(self.condition_prob, self.label_prob)</span><br>        <span class="hljs-comment">#********* End *********#</span><br><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">predict</span>(<span class="hljs-params">self, feature</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        对数据进行预测，返回预测结果</span><br><span class="hljs-string">        :param feature:测试数据集所有特征组成的ndarray</span><br><span class="hljs-string">        :return:</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        <span class="hljs-comment"># ********* Begin *********#</span><br>        ret_arr = []<br><br>        <span class="hljs-keyword">for</span> fs <span class="hljs-keyword">in</span> feature:<br>            label2res = &#123;&#125;<br>            <span class="hljs-keyword">for</span> label, feat_index2feat_count <span class="hljs-keyword">in</span> self.condition_prob.items():<br>                p = self.label_prob[label]<br><br>                <span class="hljs-keyword">for</span> i, f <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(fs):<br>                    p *= feat_index2feat_count[i].get(f, <span class="hljs-number">0</span>) / \<br>                        feat_index2feat_count[<span class="hljs-string">&quot;__count__&quot;</span>]<br><br>                label2res[label] = p<br><br>            max_prob = &#123;<span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;foo&quot;</span>, <span class="hljs-string">&quot;prob&quot;</span>: -<span class="hljs-number">1</span>&#125;<br>            <span class="hljs-keyword">for</span> label, prob <span class="hljs-keyword">in</span> label2res.items():<br>                <span class="hljs-keyword">if</span>(prob &gt; max_prob[<span class="hljs-string">&quot;prob&quot;</span>]):<br>                    max_prob = &#123;<span class="hljs-string">&quot;label&quot;</span>: label, <span class="hljs-string">&quot;prob&quot;</span>: prob&#125;<br><br>            ret_arr.append(max_prob[<span class="hljs-string">&quot;label&quot;</span>])<br><br>        <span class="hljs-keyword">return</span> ret_arr<br>        <span class="hljs-comment">#********* End *********#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="4-拉普拉斯平滑"><a href="#4-拉普拉斯平滑" class="headerlink" title="4. 拉普拉斯平滑"></a>4. 拉普拉斯平滑</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">NaiveBayesClassifier</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        self.label_prob表示每种类别在数据中出现的概率</span><br><span class="hljs-string">        例如，&#123;0:0.333, 1:0.667&#125;表示数据中类别0出现的概率为0.333，类别1的概率为0.667</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        self.label_prob = &#123;&#125;<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        self.condition_prob表示每种类别确定的条件下各个特征出现的概率</span><br><span class="hljs-string">        例如训练数据集中的特征为 [[2, 1, 1],</span><br><span class="hljs-string">                              [1, 2, 2],</span><br><span class="hljs-string">                              [2, 2, 2],</span><br><span class="hljs-string">                              [2, 1, 2],</span><br><span class="hljs-string">                              [1, 2, 3]]</span><br><span class="hljs-string">        标签为[1, 0, 1, 0, 1]</span><br><span class="hljs-string">        那么当标签为0时第0列的值为1的概率为0.5，值为2的概率为0.5;</span><br><span class="hljs-string">        当标签为0时第1列的值为1的概率为0.5，值为2的概率为0.5;</span><br><span class="hljs-string">        当标签为0时第2列的值为1的概率为0，值为2的概率为1，值为3的概率为0;</span><br><span class="hljs-string">        当标签为1时第0列的值为1的概率为0.333，值为2的概率为0.666;</span><br><span class="hljs-string">        当标签为1时第1列的值为1的概率为0.333，值为2的概率为0.666;</span><br><span class="hljs-string">        当标签为1时第2列的值为1的概率为0.333，值为2的概率为0.333,值为3的概率为0.333;</span><br><span class="hljs-string">        因此self.label_prob的值如下：     </span><br><span class="hljs-string">        &#123;</span><br><span class="hljs-string">            0:&#123;</span><br><span class="hljs-string">                0:&#123;</span><br><span class="hljs-string">                    1:0.5</span><br><span class="hljs-string">                    2:0.5</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                1:&#123;</span><br><span class="hljs-string">                    1:0.5</span><br><span class="hljs-string">                    2:0.5</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                2:&#123;</span><br><span class="hljs-string">                    1:0</span><br><span class="hljs-string">                    2:1</span><br><span class="hljs-string">                    3:0</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">            &#125;</span><br><span class="hljs-string">            1:</span><br><span class="hljs-string">            &#123;</span><br><span class="hljs-string">                0:&#123;</span><br><span class="hljs-string">                    1:0.333</span><br><span class="hljs-string">                    2:0.666</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                1:&#123;</span><br><span class="hljs-string">                    1:0.333</span><br><span class="hljs-string">                    2:0.666</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">                2:&#123;</span><br><span class="hljs-string">                    1:0.333</span><br><span class="hljs-string">                    2:0.333</span><br><span class="hljs-string">                    3:0.333</span><br><span class="hljs-string">                &#125;</span><br><span class="hljs-string">            &#125;</span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        self.condition_prob = &#123;&#125;<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fit</span>(<span class="hljs-params">self, feature, label</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        对模型进行训练，需要将各种概率分别保存在self.label_prob和self.condition_prob中</span><br><span class="hljs-string">        :param feature: 训练数据集所有特征组成的ndarray</span><br><span class="hljs-string">        :param label:训练数据集中所有标签组成的ndarray</span><br><span class="hljs-string">        :return: 无返回</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br><br>        <span class="hljs-comment">#********* Begin *********#</span><br>        <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> label:<br>            self.label_prob[l] = self.label_prob.get(l, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span><br><br>        <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> self.label_prob.items():<br>            self.label_prob[k] = (v+<span class="hljs-number">1</span>) / (<span class="hljs-built_in">len</span>(label) +<br>                                          <span class="hljs-built_in">len</span>(self.label_prob.keys()))<br><br>        label2data = &#123;&#125;<br>        <span class="hljs-keyword">for</span> i, data <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(feature):<br>            l = label[i]<br>            old_data = label2data.get(l)<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> old_data:<br>                label2data[l] = [data]<br>            <span class="hljs-keyword">else</span>:<br>                label2data[l].append(data)<br><br>        <span class="hljs-keyword">for</span> l, all_data <span class="hljs-keyword">in</span> label2data.items():<br>            feat_index2feat_count = &#123;&#125;<br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(feature[<span class="hljs-number">0</span>])):<br>                feat_index2feat_count[i] = &#123;&#125;<br>                <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> feature:<br>                    d = f[i]<br>                    feat_index2feat_count[i][d] = <span class="hljs-number">0</span><br><br>            <span class="hljs-keyword">for</span> data <span class="hljs-keyword">in</span> all_data:<br>                <span class="hljs-keyword">for</span> i, d <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(data):<br>                    feat_index2feat_count[i][d] = feat_index2feat_count[i].get(<br>                        d, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span><br><br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> feat_index2feat_count.keys():<br>                <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> feat_index2feat_count[i].keys():<br>                    feat_index2feat_count[i][k] = (<br>                        feat_index2feat_count[i][k]+<span class="hljs-number">1</span>) / (<span class="hljs-built_in">len</span>(all_data)+<span class="hljs-built_in">len</span>(feat_index2feat_count[i].keys()))<br><br>            self.condition_prob[l] = feat_index2feat_count<br>        <span class="hljs-comment">#********* End *********#</span><br><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">predict</span>(<span class="hljs-params">self, feature</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        对数据进行预测，返回预测结果</span><br><span class="hljs-string">        :param feature:测试数据集所有特征组成的ndarray</span><br><span class="hljs-string">        :return:</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br><br>        result = []<br>        <span class="hljs-comment"># 对每条测试数据都进行预测</span><br>        <span class="hljs-keyword">for</span> i, f <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(feature):<br>            <span class="hljs-comment"># 可能的类别的概率</span><br>            prob = np.zeros(<span class="hljs-built_in">len</span>(self.label_prob.keys()))<br>            ii = <span class="hljs-number">0</span><br>            <span class="hljs-keyword">for</span> label, label_prob <span class="hljs-keyword">in</span> self.label_prob.items():<br>                <span class="hljs-comment"># 计算概率</span><br>                prob[ii] = label_prob<br>                <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(feature[<span class="hljs-number">0</span>])):<br>                    prob[ii] *= self.condition_prob[label][j][f[j]]<br>                ii += <span class="hljs-number">1</span><br>            <span class="hljs-comment"># 取概率最大的类别作为结果</span><br>            result.append(<span class="hljs-built_in">list</span>(self.label_prob.keys())[np.argmax(prob)])<br>        <span class="hljs-keyword">return</span> np.array(result)<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-新闻文本主题分类"><a href="#5-新闻文本主题分类" class="headerlink" title="5. 新闻文本主题分类"></a>5. 新闻文本主题分类</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.feature_extraction.text <span class="hljs-keyword">import</span> CountVectorizer<br><span class="hljs-keyword">from</span> sklearn.naive_bayes <span class="hljs-keyword">import</span> MultinomialNB<br><span class="hljs-keyword">from</span> sklearn.feature_extraction.text <span class="hljs-keyword">import</span> TfidfTransformer<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">news_predict</span>(<span class="hljs-params">train_sample, train_label, test_sample</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    训练模型并进行预测，返回预测结果</span><br><span class="hljs-string">    :param train_sample:原始训练集中的新闻文本，类型为ndarray</span><br><span class="hljs-string">    :param train_label:训练集中新闻文本对应的主题标签，类型为ndarray</span><br><span class="hljs-string">    :param test_sample:原始测试集中的新闻文本，类型为ndarray</span><br><span class="hljs-string">    :return 预测结果，类型为ndarray</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br>    <span class="hljs-comment">#********* Begin *********#</span><br>    vec = CountVectorizer()<br>    X_train_count_vectorizer = vec.fit_transform(train_sample)<br>    X_test_count_vectorizer = vec.transform(test_sample)<br><br>    tfidf = TfidfTransformer()<br>    X_train = tfidf.fit_transform(X_train_count_vectorizer)<br>    X_test = tfidf.transform(X_test_count_vectorizer)<br><br>    clf = MultinomialNB(<span class="hljs-number">0.03</span>)<br><br>    clf.fit(X_train, train_label)<br>    <span class="hljs-keyword">return</span> clf.predict(X_test)<br>    <span class="hljs-comment">#********* End *********#</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h1><h2 id="1-什么是支持向量机-B"><a href="#1-什么是支持向量机-B" class="headerlink" title="1. 什么是支持向量机 B"></a>1. 什么是支持向量机 B</h2><h2 id="2-间隔与支持向量-B"><a href="#2-间隔与支持向量-B" class="headerlink" title="2. 间隔与支持向量 B"></a>2. 间隔与支持向量 B</h2><h2 id="3-对偶问题-AC"><a href="#3-对偶问题-AC" class="headerlink" title="3. 对偶问题 AC"></a>3. 对偶问题 AC</h2><h2 id="4-核函数"><a href="#4-核函数" class="headerlink" title="4. 核函数"></a>4. 核函数</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#encoding=utf8</span><br><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><span class="hljs-comment">#实现核函数</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">kernel</span>(<span class="hljs-params">x,sigma=<span class="hljs-number">1.0</span></span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    input:x(ndarray):样本</span><br><span class="hljs-string">    output:x(narray):转化后的值</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span>    <br>    <span class="hljs-comment">#********* Begin *********#</span><br>    m = x.shape[<span class="hljs-number">0</span>]      <br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m):  <br>        diff = x[i,<span class="hljs-number">0</span>]-x[i,<span class="hljs-number">1</span>]  <br>        x[i,<span class="hljs-number">0</span>] = np.exp(diff*diff.T/(-<span class="hljs-number">2</span>*sigma**<span class="hljs-number">2</span>))  <br>        x[i,<span class="hljs-number">1</span>] = np.exp(diff*diff.T/(-<span class="hljs-number">2</span>*sigma**<span class="hljs-number">2</span>))  <br>    <span class="hljs-comment">#********* End *********#</span><br>    <span class="hljs-keyword">return</span> x<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-软间隔"><a href="#5-软间隔" class="headerlink" title="5. 软间隔"></a>5. 软间隔</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#encoding=utf8</span><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SVM</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, max_iter=<span class="hljs-number">100</span>, kernel=<span class="hljs-string">&#x27;linear&#x27;</span></span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        input:max_iter(int):最大训练轮数</span><br><span class="hljs-string">              kernel(str):核函数，等于&#x27;linear&#x27;表示线性，等于&#x27;poly&#x27;表示多项式</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        self.max_iter = max_iter<br>        self._kernel = kernel<br>    <span class="hljs-comment">#初始化模型</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">init_args</span>(<span class="hljs-params">self, features, labels</span>):<br>        self.m, self.n = features.shape<br>        self.X = features<br>        self.Y = labels<br>        self.b = <span class="hljs-number">0.0</span><br>        <span class="hljs-comment"># 将Ei保存在一个列表里</span><br>        self.alpha = np.ones(self.m)<br>        self.E = [self._E(i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.m)]<br>        <span class="hljs-comment"># 松弛变量</span><br>        self.C = <span class="hljs-number">1.0</span><br>        <span class="hljs-comment">#********* Begin *********#    </span><br>    <span class="hljs-comment">#kkt条件    </span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_KKT</span>(<span class="hljs-params">self, i</span>):<br>        y_g = self._g(i)*self.Y[i]<br>        <span class="hljs-keyword">if</span> self.alpha[i] == <span class="hljs-number">0</span>:<br>            <span class="hljs-keyword">return</span> y_g &gt;= <span class="hljs-number">1</span><br>        <span class="hljs-keyword">elif</span> <span class="hljs-number">0</span> &lt; self.alpha[i] &lt; self.C:<br>            <span class="hljs-keyword">return</span> y_g == <span class="hljs-number">1</span><br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> y_g &lt;= <span class="hljs-number">1</span><br><br>    <span class="hljs-comment"># g(x)预测值，输入xi（X[i]）</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_g</span>(<span class="hljs-params">self, i</span>):<br>        r = self.b<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.m):<br>            r += self.alpha[j]*self.Y[j]*self.kernel(self.X[i], self.X[j])<br>        <span class="hljs-keyword">return</span> r<br><br>    <span class="hljs-comment"># 核函数</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">kernel</span>(<span class="hljs-params">self, x1, x2</span>):<br>        <span class="hljs-keyword">if</span> self._kernel == <span class="hljs-string">&#x27;linear&#x27;</span>:<br>            <span class="hljs-keyword">return</span> <span class="hljs-built_in">sum</span>([x1[k]*x2[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.n)])<br>        <span class="hljs-keyword">elif</span> self._kernel == <span class="hljs-string">&#x27;poly&#x27;</span>:<br>            <span class="hljs-keyword">return</span> (<span class="hljs-built_in">sum</span>([x1[k]*x2[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.n)]) + <span class="hljs-number">1</span>)**<span class="hljs-number">2</span>    <br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br><br>    <span class="hljs-comment"># E（x）为g(x)对输入x的预测值和y的差</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_E</span>(<span class="hljs-params">self, i</span>):<br>        <span class="hljs-keyword">return</span> self._g(i) - self.Y[i]<br><br>    <span class="hljs-comment">#初始alpha</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_init_alpha</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># 外层循环首先遍历所有满足0&lt;a&lt;C的样本点，检验是否满足KKT</span><br>        index_list = [i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.m) <span class="hljs-keyword">if</span> <span class="hljs-number">0</span> &lt; self.alpha[i] &lt; self.C]<br>        <span class="hljs-comment"># 否则遍历整个训练集</span><br>        non_satisfy_list = [i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.m) <span class="hljs-keyword">if</span> i <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> index_list]<br>        index_list.extend(non_satisfy_list)<br><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> index_list:<br>            <span class="hljs-keyword">if</span> self._KKT(i):<br>                <span class="hljs-keyword">continue</span><br><br>            E1 = self.E[i]<br>            <span class="hljs-comment"># 如果E2是+，选择最小的；如果E2是负的，选择最大的</span><br>            <span class="hljs-keyword">if</span> E1 &gt;= <span class="hljs-number">0</span>:<br>                j = <span class="hljs-built_in">min</span>(<span class="hljs-built_in">range</span>(self.m), key=<span class="hljs-keyword">lambda</span> x: self.E[x])<br>            <span class="hljs-keyword">else</span>:<br>                j = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">range</span>(self.m), key=<span class="hljs-keyword">lambda</span> x: self.E[x])<br>            <span class="hljs-keyword">return</span> i, j<br><br>    <span class="hljs-comment">#选择参数   </span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_compare</span>(<span class="hljs-params">self, _alpha, L, H</span>):<br>        <span class="hljs-keyword">if</span> _alpha &gt; H:<br>            <span class="hljs-keyword">return</span> H<br>        <span class="hljs-keyword">elif</span> _alpha &lt; L:<br>            <span class="hljs-keyword">return</span> L<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> _alpha<br><br>    <span class="hljs-comment">#训练</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fit</span>(<span class="hljs-params">self, features, labels</span>):<br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        input:features(ndarray):特征</span><br><span class="hljs-string">              label(ndarray):标签</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        self.init_args(features, labels)<br><br>        <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.max_iter):<br>            <span class="hljs-comment"># train</span><br>            i1, i2 = self._init_alpha()<br><br>            <span class="hljs-comment"># 边界</span><br>            <span class="hljs-keyword">if</span> self.Y[i1] == self.Y[i2]:<br>                L = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, self.alpha[i1]+self.alpha[i2]-self.C)<br>                H = <span class="hljs-built_in">min</span>(self.C, self.alpha[i1]+self.alpha[i2])<br>            <span class="hljs-keyword">else</span>:<br>                L = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, self.alpha[i2]-self.alpha[i1])<br>                H = <span class="hljs-built_in">min</span>(self.C, self.C+self.alpha[i2]-self.alpha[i1])<br><br>            E1 = self.E[i1]<br>            E2 = self.E[i2]<br>            <span class="hljs-comment"># eta=K11+K22-2K12</span><br>            eta = self.kernel(self.X[i1], self.X[i1]) + self.kernel(self.X[i2], self.X[i2]) - <span class="hljs-number">2</span>*self.kernel(self.X[i1], self.X[i2])<br>            <span class="hljs-keyword">if</span> eta &lt;= <span class="hljs-number">0</span>:<br>                <span class="hljs-keyword">continue</span><br><br>            alpha2_new_unc = self.alpha[i2] + self.Y[i2] * (E2 - E1) / eta<br>            alpha2_new = self._compare(alpha2_new_unc, L, H)<br><br>            alpha1_new = self.alpha[i1] + self.Y[i1] * self.Y[i2] * (self.alpha[i2] - alpha2_new)<br><br>            b1_new = -E1 - self.Y[i1] * self.kernel(self.X[i1], self.X[i1]) * (alpha1_new-self.alpha[i1]) - self.Y[i2] * self.kernel(self.X[i2], self.X[i1]) * (alpha2_new-self.alpha[i2])+ self.b <br>            b2_new = -E2 - self.Y[i1] * self.kernel(self.X[i1], self.X[i2]) * (alpha1_new-self.alpha[i1]) - self.Y[i2] * self.kernel(self.X[i2], self.X[i2]) * (alpha2_new-self.alpha[i2])+ self.b <br><br>            <span class="hljs-keyword">if</span> <span class="hljs-number">0</span> &lt; alpha1_new &lt; self.C:<br>                b_new = b1_new<br>            <span class="hljs-keyword">elif</span> <span class="hljs-number">0</span> &lt; alpha2_new &lt; self.C:<br>                b_new = b2_new<br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-comment"># 选择中点</span><br>                b_new = (b1_new + b2_new) / <span class="hljs-number">2</span><br><br>            <span class="hljs-comment"># 更新参数</span><br>            self.alpha[i1] = alpha1_new<br>            self.alpha[i2] = alpha2_new<br>            self.b = b_new<br><br>            self.E[i1] = self._E(i1)<br>            self.E[i2] = self._E(i2)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;train done!&#x27;</span><br>    <span class="hljs-comment">#********* End *********#              </span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">predict</span>(<span class="hljs-params">self, data</span>):<br>        r = self.b<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.m):<br>            r += self.alpha[i] * self.Y[i] * self.kernel(data, self.X[i])<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> r &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> -<span class="hljs-number">1</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">score</span>(<span class="hljs-params">self, X_test, y_test</span>):<br>        right_count = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(X_test)):<br>            result = self.predict(X_test[i])<br>            <span class="hljs-keyword">if</span> result == y_test[i]:<br>                right_count += <span class="hljs-number">1</span><br>        <span class="hljs-keyword">return</span> right_count / <span class="hljs-built_in">len</span>(X_test)<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_weight</span>(<span class="hljs-params">self</span>):<br>        yx = self.Y.reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)*self.X<br>        self.w = np.dot(yx.T, self.alpha)<br>        <span class="hljs-keyword">return</span> self.w<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-sklearn中的支持向量机"><a href="#6-sklearn中的支持向量机" class="headerlink" title="6. sklearn中的支持向量机"></a>6. sklearn中的支持向量机</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#encoding=utf8</span><br><span class="hljs-keyword">from</span> sklearn.svm <span class="hljs-keyword">import</span> SVC<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">svm_classifier</span>(<span class="hljs-params">train_data,train_label,test_data</span>):<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    input:train_data(ndarray):训练样本</span><br><span class="hljs-string">          train_label(ndarray):训练标签</span><br><span class="hljs-string">          test_data(ndarray):测试样本</span><br><span class="hljs-string">    output:predict(ndarray):预测结果      </span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br>    <span class="hljs-comment">#********* Begin *********#</span><br>    svc = SVC()<br>    svc.fit(train_data,train_label)<br>    predict = svc.predict(test_data)<br>    <span class="hljs-comment">#********* End *********#</span><br>    <span class="hljs-keyword">return</span> predict<br></code></pre></td></tr></table></figure>
+
+<h1 id="大实验之鸢尾花"><a href="#大实验之鸢尾花" class="headerlink" title="大实验之鸢尾花"></a>大实验之鸢尾花</h1><p><a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/forum/thread-92909-1-1.html">华为云论坛_云计算论坛_开发者论坛_技术论坛-华为云</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/school-learning/" class="category-chain-item">school learning</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8E%9F%E5%88%9B/">#原创</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>HUST ML Labs</div>
+      <div>https://eliteguo.github.io/2023/05/06/HUST-ML-Labs/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>EliteGUO</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/01/25/21%E5%B2%81%E7%9A%84%E6%9C%80%E5%90%8E%E4%B8%80%E5%A4%A9/" title="21岁的最后一天">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">21岁的最后一天</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/02/%E7%94%A8%E4%B8%A4%E4%B8%AA%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97/" title="用两个栈实现队列">
+                        <span class="hidden-mobile">用两个栈实现队列</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
